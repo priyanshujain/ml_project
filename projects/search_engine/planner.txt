@@ -1,0 +1,60 @@
+THe search engine would be dependent on parser as follows :
+
+Once it fetches all the data the parser will generate a mapping for all the documents in the following format as follows:
+We assume a unique mapping for all documents to document Id
+and so for word to word ID :
+
+The dict: -- name used for this stuc below.
+List :
+        Word_ID :
+            List
+                Document_ID :
+                    LIST
+                        POSID
+
+Once the list is generated we will be using to create a TFIdf vector for each document
+Then when the query comes we will be genrating tfidf vector for the query as well and then we will calculate ordering based on the closeness of 
+the
+query thidf vector to doc tfidf vector
+assuming the documents are indexed before and we have small query and Document space I guess we dont need any optimisations
+
+The flow of the project :
+
+The indexing may take much time and in future we may need to add aditional sources of the document indexers so I propose this:
+
+The parser would take a set of documents and would generate a dict for that documents.
+
+Now we can have different classes ( For evernote,keep,etc) and use parser and generate dict for various sources.
+THe advantage for by following method is that we can do stuff in parallel and thus each map can be generated in parallel. Although
+python doesnt have good parallel support we can work around that.
+
+So once we have all this mapping for dict class we can add them and this we require a class that can add and subtract dict generated from two
+documents.
+
+
+So we can have such a class and parser can take help of that as such it can use that to add the various dicts it generate.
+
+So I think We need a utils class which would be having this func
+Give a occurence of the word along with list of position and doc id It would add that to a dict
+
+Parser would do the following it would recieve a document and get string of the words in the doc along with the number at which it came
+Then it would call stemmer on each word and pass it to stop words and then it would recieve list of all the stemmed words that are actually 
+significant.
+So now once we have that we can start creating a list for each word and adding them in a dict.
+
+Document Id generation and creating and knowing source to mapping :
+I think this would be dependent on the source of the document.
+
+We can use basic SQL to store stuff
+
+The table can be of following type:
+
+Document Unique Id  Document type Doc local Id Metrics
+
+The TFIDF
+The tfidf would be as follows
+each word would have score for each document
+it would be calculated as follows for starters
+Number of times in doc/Total words in doc * log (num of docs / words in this doc)
+
+Starting with the basic util addition function of one dict to another
